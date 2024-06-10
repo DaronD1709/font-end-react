@@ -7,16 +7,17 @@ import { API_URL, dataProvider } from "./data";
 
 export const authCredentials = {
   email: "huudanhnguyen1709@gmail.com",
-  password: "demodemo",
+  password: "123123",
 };
 
 export const authProvider: AuthProvider = {
   login: async ({ email }) => {
+    const accessToken = localStorage.getItem("access_token");
     try {
       const { data } = await dataProvider.custom({
-        url: API_URL,
+        url: `${API_URL}/login`,
         method: "post",
-        headers: {},
+        headers: accessToken ? { Authorization: `Bearer ${accessToken}` } : {},
         meta: {
           variables: { email },
           rawQuery: `
@@ -38,12 +39,13 @@ export const authProvider: AuthProvider = {
         success: true,
         redirectTo: "/",
       };
-    } catch (error: any) {
+    } catch (e) {
+      const error = e as Error;
       return {
         success: false,
         error: {
           message: "message" in error ? error.message : "Login failed",
-          name: "name" in error ? error.name : "Invalid email or password",
+          name: "name" in error ? error.name : "Invalid email or password111",
         },
       };
     }
